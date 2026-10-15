@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>David Kebede — Product Manager</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0f0e0d;
+    --ink-2: #4a4843;
+    --ink-3: #8a8784;
+    --surface: #faf9f7;
+    --surface-2: #f2f0ec;
+    --surface-3: #e8e4de;
+    --accent: #1a4d3e;
+    --accent-light: #d4ede5;
+    --accent-mid: #2d7a62;
+    --warm: #c4602a;
+    --warm-light: #f5ede6;
+    --border: rgba(15,14,13,0.10);
+    /* Site typography (Anton + Poppins) */
+    --display: 'Anton', Impact, 'Arial Narrow', sans-serif;
+    --serif: 'Poppins', system-ui, sans-serif;
+    --sans: 'Poppins', system-ui, sans-serif;
+    /* Opening + header keep their original typefaces */
+    --brand-display: 'Bebas Neue', 'Anton', Impact, sans-serif;
+    --brand-sans: 'DM Sans', 'Poppins', system-ui, sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* GRID BACKGROUND — fixed behind every section */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: var(--surface) url('grid-bg.jpg') center / cover no-repeat;
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  /* CUSTOM CURSOR (ring + dot) — mouse/trackpad devices only */
+  .cursor-ring, .cursor-dot {
+    position: fixed;
+    top: 0; left: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    opacity: 0;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 50px; height: 50px;
+    border: 1px solid #fff;
+    transform: translate(-50%, -50%);
+    transition: transform 0.2s ease-out, opacity 0.3s, width 0.3s, height 0.3s;
+  }
+  .cursor-dot {
+    width: 20px; height: 20px;
+    background: #fff;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s, opacity 0.3s;
+  }
+  .cursor-dot.is-hover { width: 50px; height: 50px; opacity: 0.5 !important; }
+  .cursor-ring.is-down { width: 40px; height: 40px; }
+  html.has-cursor, html.has-cursor a, html.has-cursor button { cursor: none; }
+  html.has-cursor .cursor-ring, html.has-cursor .cursor-dot { opacity: 1; }
+  html.has-cursor.cursor-out .cursor-ring, html.has-cursor.cursor-out .cursor-dot { opacity: 0; }
+  @media (hover: none), (pointer: coarse) {
+    .cursor-ring, .cursor-dot { display: none; }
+  }
+
+  /* PRELOADER */
+  #preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.25rem;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+  }
+  #preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+  .preloader-word {
+    font-family: var(--brand-display);
+    font-size: clamp(3.5rem, 12vw, 9rem);
+    color: #fff;
+    letter-spacing: 0.06em;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: greet-in 0.5s ease forwards;
+    line-height: 1;
+  }
+  .preloader-word:nth-child(2) { animation-delay: 0.18s; color: #7ecdb4; }
+  .preloader-sub {
+    font-family: var(--brand-sans);
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: greet-in 0.5s 0.38s ease forwards;
+    margin-top: 0.75rem;
+  }
+  @keyframes greet-in { to { opacity: 1; transform: translateY(0); } }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 5vw;
+    background: rgba(250,249,247,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: var(--brand-display);
+    font-size: 1.5rem;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+  }
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: var(--brand-sans);
+    text-decoration: none;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--ink-2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .nav-num {
+    font-family: var(--brand-display);
+    font-size: 0.72rem;
+    color: var(--accent-mid);
+    letter-spacing: 0;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* SECTIONS */
+  section { padding: 6rem 5vw; }
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-top: 0;
+    padding-bottom: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-video-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  .hero-video-bg video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .hero-video-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(to right,
+      rgba(15,14,13,0.80) 0%,
+      rgba(26,77,62,0.60) 50%,
+      rgba(0,0,0,0.12) 100%
+    );
+  }
+  .hero-video-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(15,14,13,0.88) 0%, transparent 55%);
+  }
+
+  .hero-top {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 8rem 5vw 0;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #7ecdb4;
+    border: 1px solid rgba(126,205,180,0.4);
+    padding: 0.45rem 1.1rem;
+    border-radius: 100px;
+    margin-top: 0.5rem;
+  }
+  .hero-eyebrow span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #7ecdb4;
+    display: inline-block;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.6); }
+  }
+  .hero-photo {
+    width: 210px;
+    height: 270px;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 130px 130px 90px 90px;
+    border: 2px solid rgba(126,205,180,0.5);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 0 6px rgba(255,255,255,0.06);
+    display: block;
+    flex-shrink: 0;
+  }
+
+  /* marquee */
+  .hero-marquee {
+    position: relative;
+    z-index: 2;
+    overflow: hidden;
+    width: 100%;
+    padding-top: 1.5rem;
+    mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  }
+  .hero-marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-scroll 24s linear infinite;
+  }
+  .hero-marquee-track span {
+    font-family: var(--brand-display);
+    font-size: clamp(4rem, 12vw, 9rem);
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.15);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    padding: 0 1.5rem;
+    line-height: 1;
+  }
+  @keyframes marquee-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* hero bottom */
+  .hero-main {
+    position: relative;
+    z-index: 2;
+    padding: 0 5vw 3.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: flex-end;
+    gap: 3rem;
+  }
+  .hero-name {
+    font-family: var(--brand-display);
+    font-size: clamp(5rem, 14vw, 11rem);
+    line-height: 0.88;
+    letter-spacing: 0.025em;
+    color: #fff;
+  }
+  .hero-name em {
+    display: block;
+    color: #7ecdb4;
+    font-style: normal;
+  }
+  .hero-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1.5rem;
+    padding-bottom: 0.5rem;
+    max-width: 300px;
+  }
+  .hero-tagline {
+    font-size: 0.92rem;
+    color: rgba(255,255,255,0.62);
+    font-weight: 300;
+    text-align: right;
+    line-height: 1.75;
+  }
+  .hero-ctas {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .btn-primary {
+    display: inline-block;
+    background: #fff;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 100px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: #7ecdb4; transform: translateY(-1px); }
+  .btn-ghost {
+    display: inline-block;
+    border: 1px solid rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 100px;
+    font-size: 0.78rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-ghost:hover { border-color: #fff; color: #fff; }
+
+  .hero-scroll-hint {
+    position: absolute;
+    bottom: 2rem; left: 5vw;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.38);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .scroll-line {
+    width: 40px; height: 1px;
+    background: rgba(255,255,255,0.18);
+    position: relative; overflow: hidden;
+  }
+  .scroll-line::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: #7ecdb4;
+    animation: slide-line 2s ease-in-out infinite;
+  }
+  @keyframes slide-line { 0%,100%{left:-100%} 50%{left:100%} }
+
+  /* SECTION HEADINGS */
+  .section-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-mid);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .label-num {
+    font-family: var(--display);
+    font-size: 1.1rem;
+    color: var(--accent-light);
+    letter-spacing: 0;
+  }
+  .section-label::after {
+    content: ''; flex: 1; height: 1px;
+    background: var(--accent-light); max-width: 40px;
+  }
+  .section-heading {
+    font-family: var(--display);
+    font-size: clamp(2.6rem, 6vw, 4.6rem);
+    line-height: 1.05;
+    letter-spacing: 0.01em;
+    margin-bottom: 3rem;
+    color: var(--ink);
+  }
+  .section-heading em {
+    display: block;
+    font-style: italic;
+    font-family: var(--serif);
+    font-weight: 300;
+    color: var(--accent);
+    font-size: 0.62em;
+    letter-spacing: -0.01em;
+    line-height: 1.35;
+  }
+
+  /* ABOUT */
+  #about { background: rgba(242,240,236,0.45); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 6rem;
+    align-items: start;
+  }
+  .about-stats {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .stat-item {
+    padding: 1.5rem 1.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .stat-item:last-child { border-bottom: none; }
+  .stat-number {
+    font-family: var(--display);
+    font-size: 3.1rem;
+    line-height: 1.05;
+    color: var(--accent);
+    margin-bottom: 0.2rem;
+    letter-spacing: 0.02em;
+  }
+  .stat-label { font-size: 0.82rem; color: var(--ink-3); line-height: 1.5; }
+  .edu-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  .edu-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    transition: border-color 0.2s;
+  }
+  .edu-card:hover { border-color: var(--accent-light); }
+  .edu-school {
+    font-size: 0.72rem;
+    color: var(--accent-mid);
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .edu-degree { font-size: 0.95rem; font-weight: 500; color: var(--ink); margin-bottom: 0.25rem; }
+  .edu-detail { font-size: 0.8rem; color: var(--ink-3); }
+  .about-body {
+    background: rgba(250,249,247,0.88);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem 2.25rem 0.75rem;
+  }
+  .about-body p {
+    color: var(--ink-2);
+    font-size: 1rem;
+    line-height: 1.85;
+    margin-bottom: 1.25rem;
+    font-weight: 300;
+  }
+
+  /* EXPERIENCE */
+  #experience { background: transparent; }
+  .timeline { position: relative; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 8px; bottom: 8px;
+    width: 1px;
+    background: var(--surface-3);
+  }
+  .timeline-item {
+    padding-left: 2.5rem;
+    padding-bottom: 2.5rem;
+    position: relative;
+  }
+  .timeline-item:last-child { padding-bottom: 0; }
+  .timeline-card {
+    background: rgba(250,249,247,0.92);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.5rem 1.75rem;
+    transition: border-color 0.2s;
+  }
+  .timeline-card:hover { border-color: var(--accent-light); }
+  .timeline-item.is-project .exp-role::after {
+    content: 'Project';
+    font-family: var(--sans);
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--warm);
+    background: var(--warm-light);
+    padding: 0.15rem 0.55rem;
+    border-radius: 100px;
+    margin-left: 0.6rem;
+    vertical-align: middle;
+  }
+  .timeline-dot {
+    position: absolute;
+    left: -5px; top: 10px;
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--surface);
+    box-shadow: 0 0 0 2px var(--accent-light);
+    z-index: 1;
+  }
+  .exp-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.35rem;
+  }
+  .exp-role {
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .exp-company { font-size: 0.85rem; color: var(--accent-mid); font-weight: 500; }
+  .exp-date { font-size: 0.75rem; color: var(--ink-3); margin-left: auto; letter-spacing: 0.04em; }
+  .exp-location { font-size: 0.78rem; color: var(--ink-3); margin-bottom: 1rem; }
+  .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  .exp-bullets li {
+    font-size: 0.9rem;
+    color: var(--ink-2);
+    line-height: 1.65;
+    padding-left: 1.1rem;
+    position: relative;
+    font-weight: 300;
+  }
+  .exp-bullets li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent-mid);
+    font-size: 0.8rem;
+    top: 0.05em;
+  }
+
+  /* PROJECTS */
+  #projects { background: rgba(242,240,236,0.45); }
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    gap: 1.25rem;
+  }
+  .project-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem 2.25rem;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent-light);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .project-card:hover { border-color: var(--accent-light); transform: translateY(-3px); }
+  .project-card:hover::before { transform: scaleX(1); }
+  .project-card.featured { border-color: var(--accent-light); background: linear-gradient(135deg, #fafffe 0%, #f2faf6 100%); }
+  .project-card.featured::before { transform: scaleX(1); background: var(--accent); }
+  .project-num {
+    font-family: var(--display);
+    font-size: 3.2rem;
+    color: var(--accent-light);
+    line-height: 1;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0;
+  }
+  .project-tag {
+    display: inline-flex;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.65rem;
+    border-radius: 100px;
+    margin-bottom: 0.75rem;
+    width: fit-content;
+  }
+  .tag-live { background: var(--accent-light); color: var(--accent); }
+  .tag-concept { background: var(--warm-light); color: var(--warm); }
+  .tag-shipped { background: #ece8fd; color: #5340b8; }
+  .project-name {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 1.4rem;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
+  }
+  .project-desc {
+    font-size: 0.875rem;
+    color: var(--ink-2);
+    line-height: 1.75;
+    font-weight: 300;
+    flex: 1;
+    margin-bottom: 1.5rem;
+  }
+  .project-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1.5rem;
+  }
+  .skill-chip {
+    font-size: 0.7rem;
+    background: var(--surface-2);
+    color: var(--ink-2);
+    padding: 0.2rem 0.65rem;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+  }
+  .project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: gap 0.15s;
+  }
+  .project-link:hover { gap: 0.75rem; }
+
+  /* SKILLS */
+  #skills { background: transparent; }
+  .skills-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+    gap: 1.25rem;
+  }
+  .skill-group {
+    background: rgba(242,240,236,0.94);
+    border-radius: 14px;
+    padding: 1.75rem 2rem;
+    border: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .skill-group:hover { border-color: var(--accent-light); }
+  .skill-group-title {
+    font-family: var(--display);
+    font-size: 1.3rem;
+    color: var(--accent);
+    margin-bottom: 1.25rem;
+    letter-spacing: 0.02em;
+  }
+  .skill-list { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; }
+  .skill-list li {
+    font-size: 0.88rem;
+    color: var(--ink-2);
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+  .skill-list li::before {
+    content: '';
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--accent-mid);
+    flex-shrink: 0;
+  }
+
+  /* CONTACT */
+  #contact {
+    background: var(--ink);
+    color: var(--surface);
+    position: relative;
+    overflow: hidden;
+  }
+  #contact::before {
+    content: "LET'S TALK";
+    position: absolute;
+    bottom: -2rem; right: -1rem;
+    font-family: var(--display);
+    font-size: clamp(5rem, 16vw, 13rem);
+    color: rgba(255,255,255,0.035);
+    letter-spacing: 0.04em;
+    pointer-events: none;
+    white-space: nowrap;
+    line-height: 1;
+  }
+  #contact .section-label { color: rgba(126,205,180,0.8); }
+  #contact .section-label::after { background: rgba(255,255,255,0.08); }
+  #contact .label-num { color: rgba(126,205,180,0.3); }
+  #contact .section-heading { color: var(--surface); }
+  #contact .section-heading em { color: #7ecdb4; }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 5rem;
+    align-items: start;
+    position: relative;
+    z-index: 1;
+  }
+  .contact-intro {
+    font-size: 1rem;
+    color: rgba(250,249,247,0.58);
+    font-weight: 300;
+    line-height: 1.85;
+    margin-bottom: 2.5rem;
+  }
+  .contact-links { display: flex; flex-direction: column; gap: 0.75rem; }
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: var(--surface);
+    font-size: 0.92rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px;
+    transition: border-color 0.2s, background 0.2s, color 0.2s;
+  }
+  .contact-link:hover { border-color: rgba(126,205,180,0.35); background: rgba(126,205,180,0.06); color: #7ecdb4; }
+  .contact-link-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-label { font-size: 0.7rem; color: rgba(250,249,247,0.38); letter-spacing: 0.1em; text-transform: uppercase; }
+  .form-input {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 0.85rem 1.1rem;
+    color: var(--surface);
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input::placeholder { color: rgba(250,249,247,0.22); }
+  .form-input:focus { border-color: rgba(126,205,180,0.5); }
+  textarea.form-input { min-height: 110px; resize: vertical; }
+  .form-submit {
+    background: #7ecdb4;
+    color: var(--ink);
+    border: none;
+    border-radius: 100px;
+    padding: 0.85rem 1.75rem;
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    align-self: flex-start;
+  }
+  .form-submit:hover { background: #a8dece; transform: translateY(-1px); }
+  .form-note { font-size: 0.75rem; color: rgba(250,249,247,0.4); line-height: 1.6; }
+  .form-note a { color: #7ecdb4; text-decoration: none; border-bottom: 1px solid rgba(126,205,180,0.35); }
+  .form-note.is-error { color: #f0a58a; }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink);
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding: 2rem 5vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .footer-meta { display: flex; gap: 3rem; }
+  .footer-col { display: flex; flex-direction: column; gap: 0.2rem; }
+  .footer-col-label { font-size: 0.62rem; color: rgba(250,249,247,0.2); letter-spacing: 0.12em; text-transform: uppercase; }
+  .footer-col-value { font-size: 0.8rem; color: rgba(250,249,247,0.42); }
+  .footer-back { font-size: 0.78rem; color: rgba(250,249,247,0.28); text-decoration: none; transition: color 0.2s; letter-spacing: 0.04em; }
+  .footer-back:hover { color: #7ecdb4; }
+
+  /* ANIMATIONS */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.75s ease, transform 0.75s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: none; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .about-grid, .contact-grid { grid-template-columns: minmax(0, 1fr); gap: 3rem; }
+    .hero-top { flex-direction: column-reverse; gap: 1.5rem; }
+    .hero-photo { width: 140px; height: 180px; }
+    .hero-main { grid-template-columns: 1fr; gap: 1.5rem; }
+    .hero-right { align-items: flex-start; max-width: none; }
+    .hero-tagline { text-align: left; }
+    .hero-ctas { justify-content: flex-start; }
+    nav { padding: 1rem 5vw; }
+    .nav-links { gap: 1.25rem; }
+    .nav-num { display: none; }
+    .footer-meta { gap: 1.5rem; }
+    section { padding: 4.5rem 5vw; }
+    #hero { padding-top: 0; padding-bottom: 0; }
+    .about-body { padding: 1.5rem 1.4rem 0.5rem; }
+    .timeline-item { padding-left: 1.5rem; }
+    .timeline-card { padding: 1.25rem 1.25rem; }
+    .exp-date { margin-left: 0; width: 100%; }
+    .project-card { padding: 1.75rem 1.5rem; }
+    .skill-group { padding: 1.5rem 1.5rem; }
+  }
+  @media (max-width: 560px) {
+    /* header: everything fits on one line on phones */
+    nav { padding: 0.9rem 4vw; gap: 0.75rem; }
+    .nav-logo { font-size: 1.3rem; flex-shrink: 0; }
+    .nav-links { gap: 0.7rem; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-links a { font-size: 0.62rem; letter-spacing: 0.05em; white-space: nowrap; }
+    .contact-link { font-size: 0.85rem; word-break: break-word; }
+    .footer-meta { flex-wrap: wrap; }
+  }
+  @media (max-width: 360px) {
+    .nav-links { gap: 0.55rem; }
+    .nav-links a { font-size: 0.58rem; letter-spacing: 0.03em; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor-ring" aria-hidden="true"></div>
+<div class="cursor-dot" aria-hidden="true"></div>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <div class="preloader-word">DAVID</div>
+  <div class="preloader-word">KEBEDE</div>
+  <div class="preloader-sub">Product Manager</div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">DK</a>
+  <ul class="nav-links">
+    <li><a href="#about"><span class="nav-num">01</span> About</a></li>
+    <li><a href="#experience"><span class="nav-num">02</span> Experience</a></li>
+    <li><a href="#projects"><span class="nav-num">03</span> Projects</a></li>
+    <li><a href="#skills"><span class="nav-num">04</span> Skills</a></li>
+    <li><a href="#contact"><span class="nav-num">05</span> Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-video-bg">
+    <video autoplay muted loop playsinline>
+      <source src="Skyline_loop.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-video-overlay"></div>
+
+  <div class="hero-top">
+    <div class="hero-eyebrow"><span></span> Open to PM roles</div>
+    <img src="photo.png" alt="David Kebede" class="hero-photo">
+  </div>
+
+  <div class="hero-marquee" aria-hidden="true">
+    <div class="hero-marquee-track">
+      <span>DAVID KEBEDE —</span>
+      <span>PRODUCT MANAGER —</span>
+      <span>BUILDER —</span>
+      <span>ADVISOR —</span>
+      <span>DAVID KEBEDE —</span>
+      <span>PRODUCT MANAGER —</span>
+      <span>BUILDER —</span>
+      <span>ADVISOR —</span>
+    </div>
+  </div>
+
+  <div class="hero-main">
+    <h1 class="hero-name">DAVID<br><em>KEBEDE</em></h1>
+    <div class="hero-right">
+      <p class="hero-tagline">Product manager with a founder's instinct. I build for users, move fast, and turn ambiguity into clear product direction.</p>
+      <div class="hero-ctas">
+        <a href="#projects" class="btn-primary">View my work</a>
+        <a href="#contact" class="btn-ghost">Get in touch</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-scroll-hint">
+    <div class="scroll-line"></div>
+    Scroll to explore
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="section-label fade-in"><span class="label-num">01</span> About me</div>
+    <h2 class="section-heading fade-in">BUILDER, ADVISOR,<br><em>problem solver</em></h2>
+    <div class="about-grid">
+      <div class="fade-in">
+        <div class="about-stats">
+          <div class="stat-item">
+            <div class="stat-number">100+</div>
+            <div class="stat-label">founders advised on product strategy</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">0→1</div>
+            <div class="stat-label">built and launched a platform to 7,000+ users as founder</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">MBA</div>
+            <div class="stat-label">Strategy & Innovation, Schulich School of Business</div>
+          </div>
+        </div>
+        <div class="edu-cards">
+          <div class="edu-card">
+            <div class="edu-school">Schulich School of Business, York University</div>
+            <div class="edu-degree">MBA Strategy & Innovation</div>
+            <div class="edu-detail">Dean's Entrance Scholarship · KPMG Entrepreneurial Award · April 2026</div>
+          </div>
+          <div class="edu-card">
+            <div class="edu-school">University of Calgary</div>
+            <div class="edu-degree">Bachelor of Commerce — International Business Strategy</div>
+            <div class="edu-detail">November 2021</div>
+          </div>
+        </div>
+      </div>
+      <div class="about-body fade-in">
+        <p>I'm a product manager who works at the intersection of fintech, entrepreneurship, and product strategy. I've taken a platform from 0→1 to 7,000+ users as a founder, guided 100+ early-stage founders through discovery, MVP design, and go-to-market, and worked inside regulated payments and lending operations at Neo Financial and Quantify.</p>
+        <p>That range means I speak both the language of users and the language of the business. I've written the PRD at midnight and shipped it in the morning, turned business requirements into specs engineering can build, and made hard roadmap trade-offs under real resource constraints. I've also sat across the table from investors, founders, and operators working out product-market fit under pressure.</p>
+        <p>I'm especially focused on AI and the practical use of LLMs to build better user experiences. I built a grant-matching tool on the Claude API that helped 50+ founders secure funding. My MBA at Schulich sharpened the strategy; years of shipping and advising built the product instincts.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="container">
+    <div class="section-label fade-in"><span class="label-num">02</span> Experience</div>
+    <h2 class="section-heading fade-in">WHERE I'VE<br><em>made things</em></h2>
+    <div class="timeline">
+
+      <div class="timeline-item fade-in">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="exp-meta">
+            <span class="exp-role">Product &amp; Startup Advisor</span>
+            <span class="exp-company">Platform Calgary</span>
+            <span class="exp-date">Aug 2023 – Sept 2025</span>
+          </div>
+          <div class="exp-location">Calgary, AB</div>
+          <ul class="exp-bullets">
+            <li>Advised 100+ early-stage founders through the full product lifecycle, leading discovery, MVP design, and go-to-market execution for digital platforms used by 50,000+ users.</li>
+            <li>Built a grant-matching tool on the Claude API and deployed it to the active cohort, helping 50+ founders secure grants.</li>
+            <li>Designed and delivered 15+ workshops on product validation, funnel optimization, and growth experimentation, shortening time-to-market for participating startups.</li>
+            <li>Synthesized user feedback, NPS data, and market research into actionable product backlogs, driving iterative releases and measurable gains in product-market fit.</li>
+            <li>Collaborated across a diverse ecosystem of founders, mentors, and investors on product-market fit and commercialization strategy.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="timeline-item fade-in">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="exp-meta">
+            <span class="exp-role">Operations Analyst</span>
+            <span class="exp-company">Quantify Inc.</span>
+            <span class="exp-date">Sept 2021 – June 2023</span>
+          </div>
+          <div class="exp-location">Calgary, AB</div>
+          <ul class="exp-bullets">
+            <li>Led deep-dive analytics and operational assessments in a regulated credit lending environment, surfacing critical risk signals and improving decision timeliness by 25%.</li>
+            <li>Built and automated financial models and structured reporting, translating complex lending metrics into clear executive dashboards and recommendations.</li>
+            <li>Diagnosed and closed major process gaps across origination and servicing, raising operational consistency by 30%.</li>
+            <li>Acted as the cross-functional bridge between credit, compliance, and technology to accelerate product feature launches.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="timeline-item fade-in">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="exp-meta">
+            <span class="exp-role">Founder &amp; CEO</span>
+            <span class="exp-company">Bridge</span>
+            <span class="exp-date">June 2021 – Jan 2023</span>
+          </div>
+          <div class="exp-location">Calgary, AB</div>
+          <ul class="exp-bullets">
+            <li>Built and launched a digital career exploration platform from 0→1, owning the full product lifecycle from ideation and user research through MVP and market validation, reaching 5,000+ users in under 12 months.</li>
+            <li>Conducted user interviews, defined the ideal customer profile, and authored PRDs and user stories to anchor development in validated user needs.</li>
+            <li>Shipped iteratively using engagement and traction data to prioritize features, reduce friction, and drive product-market fit.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="timeline-item fade-in">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="exp-meta">
+            <span class="exp-role">Operations Specialist</span>
+            <span class="exp-company">Neo Financial</span>
+            <span class="exp-date">Sept 2020 – Aug 2021</span>
+          </div>
+          <div class="exp-location">Calgary, AB</div>
+          <ul class="exp-bullets">
+            <li>Analyzed end-to-end payment and operational workflows at one of Canada's fastest-scaling fintechs, identifying failure points and reducing friction across 3 key customer-facing workflows.</li>
+            <li>Partnered with Product and Engineering to operationalize 4+ new platform features, translating business requirements into development-ready specifications and supporting launches through go-live.</li>
+            <li>Built KPI dashboards giving leadership real-time visibility into workflow health and approval performance, enabling faster, data-backed decisions.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="timeline-item fade-in is-project">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="exp-meta">
+            <span class="exp-role">Lead Strategy Consultant</span>
+            <span class="exp-company">Schulich MBA Consulting Project</span>
+            <span class="exp-date">Sept 2025 – Apr 2026</span>
+          </div>
+          <div class="exp-location">Toronto, ON</div>
+          <ul class="exp-bullets">
+            <li>Led an 8-month engagement for a post-secondary institution, delivering a strategic assessment across Finance, HR, Marketing, and Growth.</li>
+            <li>Conducted financial analysis, including cost structure review, revenue modeling, and scenario forecasting, to identify growth levers.</li>
+            <li>Produced a prioritized implementation roadmap translating complex findings into clear, actionable steps.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <div class="section-label fade-in"><span class="label-num">03</span> Projects</div>
+    <h2 class="section-heading fade-in">THINGS I'VE<br><em>built & shipped</em></h2>
+    <div class="projects-grid">
+
+      <div class="project-card featured fade-in">
+        <div class="project-num">01</div>
+        <span class="project-tag tag-shipped">Launched</span>
+        <h3 class="project-name">Bridge</h3>
+        <p class="project-desc">A digital career exploration platform built from zero. Led the entire product lifecycle — user research, PRDs, MVP scoping, iterative shipping — targeting students navigating career paths. Grew to 7,000+ users before I wound it down to pursue my MBA.</p>
+        <div class="project-skills">
+          <span class="skill-chip">Product Strategy</span>
+          <span class="skill-chip">User Research</span>
+          <span class="skill-chip">MVP Development</span>
+          <span class="skill-chip">PRD Writing</span>
+          <span class="skill-chip">0→1 Build</span>
+        </div>
+        <a href="https://preview.webflow.com/preview/bridges-supercool-site-92299d?utm_medium=preview_link&utm_source=designer&utm_content=bridges-supercool-site-92299d&preview=4d8ecd521e6ffa34b118029161a95f1d&workflow=preview" class="project-link" target="_blank" rel="noopener">Check it out →</a>
+      </div>
+
+      <div class="project-card fade-in">
+        <div class="project-num">02</div>
+        <span class="project-tag tag-live">Ongoing</span>
+        <h3 class="project-name">Founder Toolkit</h3>
+        <p class="project-desc">A suite of structured frameworks — pitch deck templates, GTM guides, and product validation canvases — developed during my time at Platform Calgary and the Black Entrepreneurship Alliance. Includes an AI-powered grant finder, built on the Claude API, that has helped 50+ founders find and secure funding.</p>
+        <div class="project-skills">
+          <span class="skill-chip">AI / LLMs</span>
+          <span class="skill-chip">Claude API</span>
+          <span class="skill-chip">Go-to-Market</span>
+          <span class="skill-chip">Content Design</span>
+        </div>
+        <a href="founder-toolkit.html" class="project-link">Try the grant finder →</a>
+      </div>
+
+      <div class="project-card fade-in">
+        <div class="project-num">03</div>
+        <span class="project-tag tag-concept">Concept</span>
+        <h3 class="project-name">AI Safety Compliance Tool</h3>
+        <p class="project-desc">An exploratory concept for an AI-powered tool that helps founders determine whether their business is meeting AI safety regulations. As governments roll out governance frameworks, many founders have no clear way to assess their compliance posture. This tool aims to close that gap.</p>
+        <div class="project-skills">
+          <span class="skill-chip">AI / LLMs</span>
+          <span class="skill-chip">AI Regulation</span>
+          <span class="skill-chip">Compliance</span>
+        </div>
+        <a href="mailto:davidkebede7@gmail.com" class="project-link">Discuss the idea →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <div class="section-label fade-in"><span class="label-num">04</span> Skills & tools</div>
+    <h2 class="section-heading fade-in">MY<br><em>toolkit</em></h2>
+    <div class="skills-layout">
+      <div class="skill-group fade-in">
+        <div class="skill-group-title">Product Management</div>
+        <ul class="skill-list">
+          <li>Customer Discovery &amp; User Research</li>
+          <li>PRDs, User Stories &amp; Requirements</li>
+          <li>Roadmapping &amp; Prioritization</li>
+          <li>MVP Scoping &amp; Delivery</li>
+          <li>A/B Testing &amp; Experimentation</li>
+          <li>Agile Delivery with Jira</li>
+        </ul>
+      </div>
+      <div class="skill-group fade-in">
+        <div class="skill-group-title">Strategy &amp; Growth</div>
+        <ul class="skill-list">
+          <li>Go-to-Market Strategy</li>
+          <li>Product Metrics &amp; KPI Dashboards</li>
+          <li>Funnel Optimization</li>
+          <li>Competitive &amp; Market Analysis</li>
+          <li>Revenue &amp; Financial Modeling</li>
+          <li>Cross-functional Stakeholder Alignment</li>
+        </ul>
+      </div>
+      <div class="skill-group fade-in">
+        <div class="skill-group-title">Tools</div>
+        <ul class="skill-list">
+          <li>Jira · Notion · Asana</li>
+          <li>SQL · Power BI · Excel</li>
+          <li>Google Analytics · HubSpot</li>
+          <li>Figma AI</li>
+          <li>Claude API · Perplexity</li>
+          <li>Gamma · PowerPoint</li>
+        </ul>
+      </div>
+      <div class="skill-group fade-in">
+        <div class="skill-group-title">Domains</div>
+        <ul class="skill-list">
+          <li>Fintech &amp; Payments</li>
+          <li>Regulated Lending</li>
+          <li>AI &amp; LLM Products</li>
+          <li>Startup Ecosystems</li>
+          <li>EdTech &amp; Career Platforms</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="section-label"><span class="label-num">05</span> Contact</div>
+    <h2 class="section-heading">LET'S<br><em>build something</em></h2>
+    <div class="contact-grid">
+      <div>
+        <p class="contact-intro">I'm actively looking for product manager roles where I can bring both a founder's hustle and a strategist's clarity. If you're building something interesting, let's talk.</p>
+        <div class="contact-links">
+          <a href="mailto:davidkebede7@gmail.com" class="contact-link">
+            <div class="contact-link-icon">✉</div>
+            davidkebede7@gmail.com
+          </a>
+          <a href="tel:+14038019031" class="contact-link">
+            <div class="contact-link-icon">☎</div>
+            (403) 801-9031
+          </a>
+          <a href="https://www.linkedin.com/in/david-kebede-05370b227" class="contact-link" target="_blank" rel="noopener">
+            <div class="contact-link-icon">in</div>
+            Connect on LinkedIn
+          </a>
+        </div>
+      </div>
+      <form class="contact-form" id="contact-form" novalidate>
+        <div class="form-group">
+          <label class="form-label" for="cf-name">Name</label>
+          <input type="text" id="cf-name" class="form-input" placeholder="Your name" autocomplete="name" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="cf-email">Email</label>
+          <input type="email" id="cf-email" class="form-input" placeholder="your@email.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="cf-msg">Message</label>
+          <textarea id="cf-msg" class="form-input" placeholder="Tell me about the role or project..." required></textarea>
+        </div>
+        <button type="submit" class="form-submit">Send Message →</button>
+        <p class="form-note" id="cf-note">Opens a pre-filled email in Gmail. Not on Gmail? <a href="mailto:davidkebede7@gmail.com" id="cf-mailto">Use your email app instead</a>.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-meta">
+    <div class="footer-col">
+      <span class="footer-col-label">Version</span>
+      <span class="footer-col-value">2026 © Edition</span>
+    </div>
+    <div class="footer-col">
+      <span class="footer-col-label">Location</span>
+      <span class="footer-col-value">Toronto, ON</span>
+    </div>
+  </div>
+  <a href="#hero" class="footer-back">Back to top ↑</a>
+</footer>
+
+<script>
+  // Preloader
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('preloader').classList.add('hidden');
+    }, 1400);
+  });
+
+  // Scroll fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fade-in').forEach((el, i) => {
+    el.style.transitionDelay = (i % 4) * 0.09 + 's';
+    observer.observe(el);
+  });
+
+  // Custom cursor: ring trails the pointer, dot follows exactly and grows over links
+  (function () {
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    const ring = document.querySelector('.cursor-ring');
+    const dot = document.querySelector('.cursor-dot');
+    const root = document.documentElement;
+    const hoverSel = 'a, button, input, textarea, select, label';
+    root.classList.add('has-cursor', 'cursor-out');
+    document.addEventListener('mousemove', (e) => {
+      const t = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+      ring.style.transform = t;
+      dot.style.transform = t;
+      root.classList.remove('cursor-out');
+    });
+    document.addEventListener('mouseover', (e) => {
+      dot.classList.toggle('is-hover', !!e.target.closest(hoverSel));
+    });
+    document.addEventListener('mouseleave', () => root.classList.add('cursor-out'));
+    document.addEventListener('mousedown', () => ring.classList.add('is-down'));
+    document.addEventListener('mouseup', () => ring.classList.remove('is-down'));
+  })();
+
+  // Contact form: open a pre-filled Gmail compose window to David
+  (function () {
+    const TO = 'davidkebede7@gmail.com';
+    const form = document.getElementById('contact-form');
+    const nameEl = document.getElementById('cf-name');
+    const emailEl = document.getElementById('cf-email');
+    const msgEl = document.getElementById('cf-msg');
+    const note = document.getElementById('cf-note');
+    const noteHTML = note.innerHTML;
+
+    function compose() {
+      const name = nameEl.value.trim();
+      const email = emailEl.value.trim();
+      const msg = msgEl.value.trim();
+      const subject = name ? `Portfolio inquiry from ${name}` : 'Portfolio inquiry';
+      let body = msg;
+      if (name || email) body += `\n\n— ${name}${email ? ' (' + email + ')' : ''}`;
+      return { subject, body, name, msg };
+    }
+    function updateMailto() {
+      const { subject, body } = compose();
+      const mailto = document.getElementById('cf-mailto');
+      if (mailto) mailto.href = `mailto:${TO}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+    [nameEl, emailEl, msgEl].forEach(el => el.addEventListener('input', () => {
+      if (note.classList.contains('is-error')) { note.classList.remove('is-error'); note.innerHTML = noteHTML; }
+      updateMailto();
+    }));
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const { subject, body, name, msg } = compose();
+      if (!name || !msg) {
+        note.classList.add('is-error');
+        note.textContent = 'Please add your name and a message first.';
+        return;
+      }
+      const url = 'https://mail.google.com/mail/?view=cm&fs=1'
+        + '&to=' + encodeURIComponent(TO)
+        + '&su=' + encodeURIComponent(subject)
+        + '&body=' + encodeURIComponent(body);
+      window.open(url, '_blank', 'noopener');
+    });
+  })();
+</script>
+</body>
+</html>
